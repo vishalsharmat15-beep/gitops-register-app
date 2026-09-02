@@ -35,5 +35,10 @@ spec:
                 secretKeyRef:
                   name: register-app-db
                   key: DB_PASSWORD
+            - name: ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: register-app-db
+                  key: ADMIN_TOKEN
           ports:
             - containerPort: 8080
