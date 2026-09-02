@@ -1,1 +1,1 @@
-# gitops-register-app
+# Fashion Signup App - GitOps Deployment
