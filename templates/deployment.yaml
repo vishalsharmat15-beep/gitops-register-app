@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.deploymentName }}
+  labels:
+    app: {{ .Values.app.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+    spec:
+      containers:
+        - name: {{ .Values.app.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          env:
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.databaseSecret.name }}
+                  key: {{ .Values.databaseSecret.urlKey }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.databaseSecret.name }}
+                  key: {{ .Values.databaseSecret.userKey }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.databaseSecret.name }}
+                  key: {{ .Values.databaseSecret.passwordKey }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
